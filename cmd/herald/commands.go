@@ -208,6 +208,7 @@ func sendCmd() *cobra.Command {
 		headers  []string
 		timeout  time.Duration
 		dryRun   bool
+		showBody bool
 	)
 
 	cmd := &cobra.Command{
@@ -268,7 +269,7 @@ production long before it is wrong often enough to notice.`,
 					return err
 				}
 
-				report(out, p, f, opts, results)
+				report(out, p, f, opts, results, showBody)
 			}
 
 			return nil
@@ -286,6 +287,7 @@ production long before it is wrong often enough to notice.`,
 	flags.StringArrayVar(&headers, "header", nil, "extra header as name=value, repeatable")
 	flags.DurationVar(&timeout, "timeout", 10*time.Second, "per-request timeout")
 	flags.BoolVar(&dryRun, "dry-run", false, "build and sign the request, print it, send nothing")
+	flags.BoolVar(&showBody, "response", false, "print what the endpoint answered, not only its status")
 
 	_ = cmd.MarkFlagRequired("to")
 

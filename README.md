@@ -213,6 +213,45 @@ worse thing to own than a paste.
 go build -o bin/herald ./cmd/herald
 ```
 
+## Smoke test
+
+`scripts/smoke.sh` sends every fixture over a real network to an echo service
+and reads back what that service says it received.
+
+```bash
+scripts/smoke.sh                            # https://httpbingo.org/post
+scripts/smoke.sh https://httpbin.org/post
+```
+
+The Go suite proves the signatures three ways, but all three run in process
+against receivers written in this repository. This runs the built binary, over
+TLS, through a server nobody here wrote, and checks that the body survives byte
+for byte, that every header arrives, and that the content type is what the pack
+asked for. Body mangling between signing and sending would be invisible to the
+unit tests and fatal in practice, because every scheme here signs raw bytes.
+
+It then recomputes three signatures from the wire with `openssl`, which is a
+fourth implementation after the Go engine, the Python generator and the Go
+tests. Then it exercises the delivery controls, including checking that
+`--duplicate` makes the receiver see one delivery id and that leaving it off
+makes the receiver see two.
+
+It signs with each pack's example secret and drops `HERALD_SECRET` and any
+`HERALD_SECRET_*` from its environment first, so a real secret cannot reach a
+public echo service by accident.
+
+What it cannot prove is that a real framework's verification middleware accepts
+the delivery. An echo service verifies nothing. That needs a handler, and it is
+the next thing worth doing.
+
+It is not in CI, on purpose. A test that fails when somebody else's free
+service is having a morning teaches you nothing about this code.
+
+`httpbingo.org` is the default because it returns the raw body whatever the
+content type. `httpbin.org` parses a form body into `.form` and empties
+`.data`, so the three form providers report that their bytes could not be
+checked rather than pretending either way.
+
 ## Honest about the fixtures
 
 The payloads that ship today were written from each provider's documentation,

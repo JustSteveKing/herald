@@ -22,7 +22,10 @@ transport:
     Square-Environment: Sandbox
     Square-Initial-Delivery-Timestamp: "{timestamp}"
     Square-Retry-Number: "0"
-    Square-Retry-Reason: ""
+    # Square-Retry-Reason is deliberately absent. Square sends it when it is
+    # retrying, and sending it empty on a first delivery is a claim their
+    # documentation does not make. A header with no value carries nothing and
+    # invites a handler to branch on its presence.
 
 timestamp:
   format: rfc3339

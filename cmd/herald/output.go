@@ -116,7 +116,7 @@ func warn(out io.Writer, p pack.Provider, opts deliver.Options) {
 	}
 }
 
-func report(out io.Writer, p pack.Provider, f pack.Fixture, opts deliver.Options, results []deliver.Result) {
+func report(out io.Writer, p pack.Provider, f pack.Fixture, opts deliver.Options, results []deliver.Result, showBody bool) {
 	for _, r := range results {
 		if opts.DryRun {
 			printRequest(out, r)
@@ -134,9 +134,15 @@ func report(out io.Writer, p pack.Provider, f pack.Fixture, opts deliver.Options
 		fmt.Fprintf(out, "%s %-18s %-30s %4s  %8s  %s\n",
 			mark, p.ID, f.ID, status, r.Duration.Round(time.Millisecond), r.DeliveryID)
 
-		if r.Err != nil {
+		switch {
+		case r.Err != nil:
 			fmt.Fprintf(out, "    %v\n", r.Err)
-		} else if !r.OK() && r.Body != "" {
+		case showBody && r.Body != "":
+			// Whole body, not the first line, because the caller asked and
+			// because an echo service answering with the request it received
+			// is the only way to check what actually arrived.
+			fmt.Fprintln(out, r.Body)
+		case !r.OK() && r.Body != "":
 			fmt.Fprintf(out, "    %s\n", firstLine(r.Body))
 		}
 	}
