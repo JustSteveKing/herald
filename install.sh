@@ -222,8 +222,8 @@ verify_checksum() {
 	completed "Checksum verified (sha256)."
 }
 
-# Extract only the binary. The archive also carries README.md, and unpacking
-# the lot would leave that in your bin directory.
+# Extract only the binary. The archive also carries README.md and LICENSE, and
+# unpacking the lot would leave both of those in your bin directory.
 unpack() {
 	archive=$1
 	bin_dir=$2

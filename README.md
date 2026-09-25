@@ -307,3 +307,7 @@ better and replacing one is a pull request.
 
 Signatures are a different matter, and are checked against GitHub's and
 Standard Webhooks' own published test vectors.
+
+## Licence
+
+MIT. See [LICENSE](LICENSE).
