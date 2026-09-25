@@ -9,8 +9,11 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"golang.org/x/term"
+
 	"github.com/JustSteveKing/herald/deliver"
 	"github.com/JustSteveKing/herald/internal/sync"
+	"github.com/JustSteveKing/herald/internal/tui"
 	"github.com/JustSteveKing/herald/pack"
 )
 
@@ -30,6 +33,23 @@ own schedule with "herald sync".`,
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		Version:       version,
+		Args:          cobra.NoArgs,
+		// No arguments starts the browser, because the common case is picking
+		// something rather than knowing its name. Piped or redirected, it
+		// prints help instead: a full screen interface written to a file
+		// helps nobody.
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			if !term.IsTerminal(int(os.Stdout.Fd())) {
+				return cmd.Help()
+			}
+
+			set, err := load()
+			if err != nil {
+				return err
+			}
+
+			return tui.Run(set)
+		},
 	}
 
 	cmd.AddCommand(providersCmd(), eventsCmd(), showCmd(), sendCmd(), syncCmd())
