@@ -93,6 +93,21 @@ func providersCmd() *cobra.Command {
 					p.ID, p.Name, len(fixtures), p.Source(), describeSigning(p))
 			}
 
+			if entries := set.Incompatibles(); len(entries) > 0 {
+				// Sized to the content, because these names run long and a
+				// fixed column turns the section into a ragged mess.
+				width := 0
+				for _, e := range entries {
+					width = max(width, len(e.Name))
+				}
+
+				fmt.Fprintf(out, "\nNot shipped, because nothing outside the provider can sign one:\n")
+				for _, e := range entries {
+					fmt.Fprintf(out, "%-18s %-*s  %s\n", e.ID, width, e.Name, e.Scheme)
+				}
+				fmt.Fprintf(out, "Naming one tells you what to use instead.\n")
+			}
+
 			if manifest, ok := sync.ReadManifest(pack.SyncDir()); ok {
 				fmt.Fprintf(out, "\nSynced from %s@%s on %s\n",
 					manifest.Repo, manifest.Ref, manifest.FetchedAt.Local().Format("2006-01-02 15:04"))

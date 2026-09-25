@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -17,6 +18,12 @@ func provider(set *pack.Set, id string) (pack.Provider, error) {
 		return p, nil
 	}
 
+	// Absent on purpose is a different answer from absent, and the person
+	// asking has usually already spent a while wondering which it was.
+	if entry, ok := set.Incompatible(id); ok {
+		return pack.Provider{}, incompatibleError(entry)
+	}
+
 	names := make([]string, 0, set.Len())
 	for _, p := range set.All() {
 		names = append(names, p.ID)
@@ -24,6 +31,29 @@ func provider(set *pack.Set, id string) (pack.Provider, error) {
 	sort.Strings(names)
 
 	return pack.Provider{}, fmt.Errorf("no provider %q. Known: %s", id, strings.Join(names, ", "))
+}
+
+// incompatibleError explains rather than refuses. A pack for one of these
+// could be written in an afternoon and would send the payload with no valid
+// signature, which passes against a handler that never verifies anything. The
+// error says that, and then says what to do instead, because a tool that only
+// tells you what it will not do is not much help.
+func incompatibleError(e pack.Incompatible) error {
+	var b strings.Builder
+
+	fmt.Fprintf(&b, "%s cannot be faked, so herald does not ship a pack for it.\n\n", e.Name)
+	fmt.Fprintf(&b, "  %s\n\n", e.Summary)
+	fmt.Fprintf(&b, "  Shipping the payload with no valid signature would pass against a handler\n")
+	fmt.Fprintf(&b, "  that never verifies anything, which is the one worth catching.\n\n")
+
+	if e.Workaround != "" {
+		fmt.Fprintf(&b, "Instead:\n%s\n", indent(strings.TrimSpace(e.Workaround), "  "))
+	}
+	if e.Docs != "" {
+		fmt.Fprintf(&b, "\n  %s", e.Docs)
+	}
+
+	return errors.New(b.String())
 }
 
 // resolveSecret prefers the flag, then an environment variable for this

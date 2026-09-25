@@ -10,5 +10,5 @@ package providers
 
 import "embed"
 
-//go:embed */provider.yaml */events/*
+//go:embed incompatible.yaml */provider.yaml */events/*
 var FS embed.FS

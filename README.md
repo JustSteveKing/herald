@@ -66,25 +66,78 @@ herald send stripe payment_intent.succeeded --to $URL --dry-run
 
 ## Providers
 
-Eleven packs ship in the binary: `stripe`, `mollie`, `mollie-classic`,
-`github`, `shopify`, `slack`, `twilio`, `paddle`, `square`,
-`standardwebhooks` and `paypal`.
+Ten packs ship in the binary: `stripe`, `mollie`, `mollie-classic`, `github`,
+`shopify`, `slack`, `twilio`, `paddle`, `square` and `standardwebhooks`.
 
 `standardwebhooks` covers everything that adopted the spec, which is most of
 what sends through Svix: Clerk, Resend and others. If your endpoint reads
 `webhook-id` and `webhook-signature`, that is the pack.
 
-Two of them will not do what you expect, and say so before they send:
+One of them will not do what you expect, and says so before it sends.
+`mollie-classic` is unsigned and carries no payload: the body is `id=tr_...`
+and Mollie expects your application to call the API and read the status back.
+Sending it makes your application call the real Mollie API with an id that does
+not exist in your account, so it covers the route and not the logic.
 
-- **`mollie-classic`** is unsigned and carries no payload. The body is
-  `id=tr_...` and Mollie expects your application to call the API and read the
-  status back. Sending it makes your application call the real Mollie API with
-  an id that does not exist in your account, so it covers the route and not the
-  logic.
-- **`paypal`** signs with RSA against a certificate your handler downloads from
-  a paypal.com URL. There is no shared secret, so nothing here can produce a
-  delivery that verifies. The payload is real and the signature is absent. A
-  handler that accepts it is telling you it never verifies anything.
+## Providers herald will not ship
+
+If verifying a delivery means fetching a public key or a certificate from a
+domain the provider controls, there is no shared secret and nothing outside
+that provider can produce a delivery that verifies.
+
+A pack that sent the payload with no valid signature would be worse than no
+pack. It passes against a handler that never verifies anything, which is
+exactly the handler worth catching, and it reports that as a green result. So
+these are absent on purpose, and naming one tells you what to use instead:
+
+```
+$ herald send paypal PAYMENT.CAPTURE.COMPLETED --to $URL
+herald: PayPal cannot be faked, so herald does not ship a pack for it.
+```
+
+That is not the same as a provider which does not sign at all. Mollie's classic
+webhook has no signature by design, so herald reproduces it exactly and ships
+it. Absent by design is reproducible; absent because you cannot forge it is
+not.
+
+<!-- incompatible:start -->
+
+| Provider | Signs with |
+|---|---|
+| [Amazon SNS](https://docs.aws.amazon.com/sns/latest/dg/sns-verify-signature-of-message.html) | RSA, with a certificate fetched from an amazonaws.com URL |
+| [Apple App Store Server Notifications V2](https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2) | JWS with an x5c certificate chain, verified to an Apple root |
+| [Google Cloud Pub/Sub push](https://docs.cloud.google.com/pubsub/docs/authenticate-push-subscriptions) | OIDC JWT signed by Google, verified against Google's public keys |
+| [PayPal](https://developer.paypal.com/api/rest/webhooks/rest/#link-messagesignatureverification) | RSA, with a certificate fetched from a paypal.com URL |
+
+**Amazon SNS.** SNS signs with a certificate your handler fetches over HTTPS from the SigningCertURL in the message.
+
+The message carries Signature, SignatureVersion and SigningCertURL. AWS tells you to fetch that certificate over HTTPS, confirm it was issued by Amazon SNS and that its chain of trust is valid, then verify. There is no shared secret at any point.
+
+Instead: Publish a real message to a test topic pointed at your endpoint. SNS delivers to any HTTPS URL you have confirmed the subscription on, so a tunnel to localhost is enough.
+
+**Apple App Store Server Notifications V2.** The whole payload is a JWS whose header carries a three-certificate chain that has to verify up to an Apple root.
+
+There is no separate signature header, because the notification itself is a signed JWT. Apple's own verification library reads the x5c header, requires a chain of exactly three certificates, and verifies the leaf against Apple's root certificates before trusting the payload. Signing one means holding Apple's private key.
+
+Instead: Use the Request a Test Notification endpoint in the App Store Server API, which makes Apple send a real, signed notification to the URL you have configured.
+
+**Google Cloud Pub/Sub push.** Push subscriptions authenticate with an OIDC bearer token signed by Google, and there is no shared-secret option.
+
+The Authorization header carries a JWT signed by the Pub/Sub service. Your handler verifies it against Google's public certificates and checks the email and audience claims. Google documents no shared secret and no token parameter as an alternative, so the only way to produce an acceptable token is to be Google.
+
+Instead: Publish to the topic from the emulator or a test project. Anything reaching your endpoint that is not from Google is supposed to fail, which is the behaviour you are testing.
+
+**PayPal.** PayPal signs with RSA and your handler downloads the certificate from a URL it checks is on paypal.com.
+
+The delivery carries paypal-transmission-sig, paypal-cert-url and paypal-auth-algo. Verification downloads the certificate named by that URL, having first checked the URL is a paypal.com domain, and verifies the signature against the public key in it. Nothing in that chain involves a secret you hold.
+
+Instead: Use PayPal's own webhooks simulator in the developer dashboard, which sends genuinely signed deliveries to a public URL, or call their verify-webhook-signature endpoint with a real captured event.
+
+<!-- incompatible:end -->
+
+The list lives in `providers/incompatible.yaml` and is what the command above
+prints, so the two cannot drift. If one of these ever ships a shared secret
+scheme, moving it is a pack and a deletion.
 
 ## Packs
 

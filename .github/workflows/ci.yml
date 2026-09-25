@@ -65,5 +65,17 @@ jobs:
             exit 1
           fi
 
+      - name: Regenerate the README's incompatible list
+        run: python3 scripts/gen_readme.py
+
+      - name: The README must match providers/incompatible.yaml
+        run: |
+          if ! git diff --quiet README.md; then
+            echo "The README and providers/incompatible.yaml disagree."
+            echo "Run: python3 scripts/gen_readme.py"
+            git diff README.md
+            exit 1
+          fi
+
       - name: Test against them
         run: go test ./pack/ ./signer/

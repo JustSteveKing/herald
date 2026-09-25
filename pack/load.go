@@ -26,21 +26,27 @@ type Layer struct {
 	Source Source
 }
 
-// Set is the resolved providers, one per id.
+// Set is the resolved providers, one per id, and the providers that are
+// deliberately absent.
 type Set struct {
-	byID map[string]Provider
+	byID         map[string]Provider
+	incompatible map[string]Incompatible
 }
 
 // Load reads every layer in order and returns what won. A layer that does not
 // exist is not an error: a fresh install has no synced directory and no local
 // one, and that is the normal case rather than a broken one.
 func Load(layers ...Layer) (*Set, error) {
-	set := &Set{byID: map[string]Provider{}}
+	set := &Set{byID: map[string]Provider{}, incompatible: map[string]Incompatible{}}
 
 	for _, layer := range layers {
 		root := layer.Root
 		if root == "" {
 			root = "."
+		}
+
+		if err := loadIncompatible(layer, set.incompatible); err != nil {
+			return nil, err
 		}
 
 		entries, err := fs.ReadDir(layer.FS, root)

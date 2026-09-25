@@ -202,3 +202,83 @@ func write(t *testing.T, root, id, yaml string) {
 		t.Fatal(err)
 	}
 }
+
+// TestIncompatibleListIsUsable guards the other half of the catalogue. An
+// entry with no workaround is a dead end, and an entry whose id collides with
+// a shipped pack would make the pack unreachable through the CLI's lookup.
+func TestIncompatibleListIsUsable(t *testing.T) {
+	set := embedded(t)
+
+	entries := set.Incompatibles()
+	if len(entries) == 0 {
+		t.Fatal("no incompatible providers listed, so the question gets asked again")
+	}
+
+	for _, e := range entries {
+		t.Run(e.ID, func(t *testing.T) {
+			if e.Name == "" {
+				t.Error("no name")
+			}
+			if e.Scheme == "" {
+				t.Error("no scheme: the list is meant to say what it signs with")
+			}
+			if e.Summary == "" {
+				t.Error("no summary, so the error message has nothing to say")
+			}
+			if e.Workaround == "" {
+				t.Error("no workaround: saying what herald will not do is only useful alongside what does")
+			}
+			if e.Docs == "" {
+				t.Error("no docs link")
+			} else if _, err := url.ParseRequestURI(e.Docs); err != nil {
+				t.Errorf("docs is not a URL: %v", err)
+			}
+
+			if _, shipped := set.Provider(e.ID); shipped {
+				t.Errorf("%s is listed as incompatible and also ships as a pack", e.ID)
+			}
+		})
+	}
+}
+
+func TestIncompatibleEntriesMergeRatherThanReplace(t *testing.T) {
+	local := t.TempDir()
+	t.Setenv("HERALD_SYNC_DIR", t.TempDir())
+	t.Setenv("HERALD_LOCAL_DIR", local)
+
+	if err := writeRoot(local, "incompatible.yaml", `incompatible:
+  - id: internal-thing
+    name: Internal Thing
+    scheme: mTLS
+    summary: Our own service authenticates with a client certificate.
+`); err != nil {
+		t.Fatal(err)
+	}
+
+	set, err := pack.Default()
+	if err != nil {
+		t.Fatalf("loading: %v", err)
+	}
+
+	if _, ok := set.Incompatible("internal-thing"); !ok {
+		t.Error("the local entry did not load")
+	}
+	// Adding one of your own must not delete the ones that ship.
+	if _, ok := set.Incompatible("paypal"); !ok {
+		t.Error("a local incompatible.yaml replaced the embedded list instead of merging into it")
+	}
+}
+
+func TestIncompatibleEntryWithoutASummaryIsRefused(t *testing.T) {
+	local := t.TempDir()
+	t.Setenv("HERALD_SYNC_DIR", t.TempDir())
+	t.Setenv("HERALD_LOCAL_DIR", local)
+
+	if err := writeRoot(local, "incompatible.yaml", "incompatible:\n  - id: mystery\n    name: Mystery\n"); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := pack.Default(); err == nil {
+		t.Error("an entry with nothing to say about itself loaded without complaint")
+	}
+}

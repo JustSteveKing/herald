@@ -12,3 +12,7 @@ func mkdirAll(root, name string) error {
 func writeFile(root, id, name, body string) error {
 	return os.WriteFile(filepath.Join(root, id, name), []byte(body), 0o644)
 }
+
+func writeRoot(root, name, body string) error {
+	return os.WriteFile(filepath.Join(root, name), []byte(body), 0o644)
+}
