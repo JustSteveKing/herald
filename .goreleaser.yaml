@@ -1,0 +1,39 @@
+version: 2
+
+project_name: herald
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - main: ./cmd/herald
+    env:
+      - CGO_ENABLED=0
+    # No cgo and no platform-specific APIs, so it ships everywhere Go does.
+    # The provider packs are embedded at build time, which is why a downloaded
+    # binary works before it has ever reached the network.
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    # main.version is what `herald --version` prints, and what the installer
+    # checks after unpacking.
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"

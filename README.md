@@ -207,6 +207,40 @@ herald does not save secrets. The browser remembers your target URL per
 provider and nothing else, because a config file full of signing secrets is a
 worse thing to own than a paste.
 
+## Installing
+
+From a checkout, which is what works today:
+
+```bash
+./install.sh
+```
+
+It builds with the Go on your machine and installs to `~/.local/bin` when that
+is on your PATH, `/usr/local/bin` otherwise. Override with `--bin-dir`. A
+source build stamps `herald --version` with `git describe`, so a binary built
+here reports a commit and a downloaded one reports a version, and you can tell
+which you are running.
+
+Once there are releases:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/JustSteveKing/herald/main/install.sh | sh
+```
+
+That downloads the GoReleaser archive for your platform and checks it against
+the release's `checksums.txt` before unpacking. While this repository is
+private it needs the `gh` CLI signed in, because an unauthenticated request for
+a private release asset is a 404. The source route does not care either way.
+
+`--source` and `--download` force a route, `--version vX.Y.Z` pins one, and
+`--help` lists the rest.
+
+Releases are cut by pushing a tag:
+
+```bash
+git tag v0.1.0 && git push origin v0.1.0
+```
+
 ## Building
 
 ```bash
