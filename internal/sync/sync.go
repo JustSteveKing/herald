@@ -10,6 +10,7 @@ package sync
 
 import (
 	"archive/tar"
+	"cmp"
 	"compress/gzip"
 	"context"
 	"encoding/json"
@@ -92,9 +93,15 @@ func Run(ctx context.Context, opts Options) (Manifest, error) {
 	req.Header.Set("Accept", "application/vnd.github+json")
 	req.Header.Set("User-Agent", "herald")
 	// A token is only needed for a private repository or a rate limited
-	// network. herald's own pack repository needs neither, so this stays
-	// optional rather than becoming a setup step.
-	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
+	// network, so it stays optional rather than becoming a setup step. Both
+	// names are read because GH_TOKEN is what the gh CLI sets and the one
+	// people already have exported.
+	//
+	// herald does not shell out to gh for a token. Reading someone's stored
+	// credentials because a download failed is not a thing a tool should do
+	// without being asked; the error below asks.
+	token := cmp.Or(os.Getenv("GITHUB_TOKEN"), os.Getenv("GH_TOKEN"))
+	if token != "" {
 		req.Header.Set("Authorization", "Bearer "+token)
 	}
 
@@ -105,7 +112,7 @@ func Run(ctx context.Context, opts Options) (Manifest, error) {
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return Manifest{}, fmt.Errorf("%s: %s", url, res.Status)
+		return Manifest{}, describeFailure(url, opts, res.StatusCode, res.Status, token != "")
 	}
 
 	if err := os.MkdirAll(filepath.Dir(opts.Dir), 0o755); err != nil {
@@ -151,6 +158,36 @@ func Run(ctx context.Context, opts Options) (Manifest, error) {
 	_ = os.RemoveAll(previous)
 
 	return manifest, nil
+}
+
+// describeFailure turns a status code into something worth reading.
+//
+// GitHub answers a request for a private repository with 404 rather than 403,
+// so that it does not confirm the repository exists. That is the right thing
+// for GitHub to do and a miserable error to receive, because the obvious
+// reading is that the ref is wrong. Saying so here costs nothing and saves
+// somebody checking a tag name that was correct all along.
+func describeFailure(url string, opts Options, code int, status string, authorised bool) error {
+	switch code {
+	case http.StatusNotFound:
+		if authorised {
+			return fmt.Errorf("%s: %s. The token was sent, so check that %s exists and has a ref called %s",
+				url, status, opts.Repo, opts.Ref)
+		}
+		return fmt.Errorf("%s: %s. GitHub answers 404 rather than 403 for a private repository, "+
+			"so this is either the wrong repo or ref, or %s is private and no token was sent. "+
+			"Set GITHUB_TOKEN (gh auth token prints one) and try again",
+			url, status, opts.Repo)
+
+	case http.StatusUnauthorized, http.StatusForbidden:
+		if authorised {
+			return fmt.Errorf("%s: %s. A token was sent and refused, so it is expired, "+
+				"or it cannot read %s, or you are rate limited", url, status, opts.Repo)
+		}
+		return fmt.Errorf("%s: %s. No token was sent. Set GITHUB_TOKEN (gh auth token prints one)", url, status)
+	}
+
+	return fmt.Errorf("%s: %s", url, status)
 }
 
 // extract unpacks providers/** from a GitHub tarball, returning the commit the

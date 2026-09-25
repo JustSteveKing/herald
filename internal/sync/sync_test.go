@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -165,5 +166,106 @@ func TestRunIsAtomicAndWritesAManifest(t *testing.T) {
 
 	if read, ok := ReadManifest(target); !ok || read.Commit != "deadbee" {
 		t.Errorf("manifest did not round trip: %+v", read)
+	}
+}
+
+// TestAFailedFetchSaysWhatToDo covers the message rather than the mechanism.
+// GitHub answers 404 for a private repository instead of 403, so the bare
+// status sends people off to check a tag name that was never wrong. This is
+// the error a first run against a private pack repository produces, which
+// makes it the most read error in the package.
+func TestAFailedFetchSaysWhatToDo(t *testing.T) {
+	tests := []struct {
+		name   string
+		code   int
+		token  string
+		wants  []string
+		avoids []string
+	}{
+		{
+			name:  "404 with no token blames neither side and names the fix",
+			code:  http.StatusNotFound,
+			wants: []string{"private", "GITHUB_TOKEN", "gh auth token"},
+		},
+		{
+			name:   "404 with a token stops talking about tokens",
+			code:   http.StatusNotFound,
+			token:  "a-token",
+			wants:  []string{"token was sent", "ref"},
+			avoids: []string{"Set GITHUB_TOKEN"},
+		},
+		{
+			name:  "403 with no token names the fix",
+			code:  http.StatusForbidden,
+			wants: []string{"No token was sent", "GITHUB_TOKEN"},
+		},
+		{
+			name:  "403 with a token suggests what is actually wrong",
+			code:  http.StatusForbidden,
+			token: "a-token",
+			wants: []string{"expired", "rate limited"},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			if tc.token != "" {
+				t.Setenv("GITHUB_TOKEN", tc.token)
+			} else {
+				t.Setenv("GITHUB_TOKEN", "")
+				t.Setenv("GH_TOKEN", "")
+			}
+
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(tc.code)
+			}))
+			defer server.Close()
+
+			_, err := Run(context.Background(), Options{
+				Dir:     filepath.Join(t.TempDir(), "providers"),
+				BaseURL: server.URL,
+				Repo:    "owner/repo",
+				Ref:     "v9.9.9",
+			})
+			if err == nil {
+				t.Fatal("a failing fetch returned no error")
+			}
+
+			for _, want := range tc.wants {
+				if !strings.Contains(err.Error(), want) {
+					t.Errorf("the error never mentions %q:\n%s", want, err)
+				}
+			}
+			for _, avoid := range tc.avoids {
+				if strings.Contains(err.Error(), avoid) {
+					t.Errorf("the error should not mention %q:\n%s", avoid, err)
+				}
+			}
+		})
+	}
+}
+
+// TestGHTokenIsReadToo exists because GH_TOKEN is what the gh CLI sets, and
+// somebody with only that exported would otherwise get the no-token error
+// while looking at a token.
+func TestGHTokenIsReadToo(t *testing.T) {
+	t.Setenv("GITHUB_TOKEN", "")
+	t.Setenv("GH_TOKEN", "from-gh")
+
+	var seen string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		seen = r.Header.Get("Authorization")
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	defer server.Close()
+
+	_, _ = Run(context.Background(), Options{
+		Dir:     filepath.Join(t.TempDir(), "providers"),
+		BaseURL: server.URL,
+		Repo:    "owner/repo",
+	})
+
+	if seen != "Bearer from-gh" {
+		t.Errorf("Authorization was %q, want the GH_TOKEN value", seen)
 	}
 }

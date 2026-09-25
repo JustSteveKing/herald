@@ -185,7 +185,19 @@ fails there rather than in somebody's afternoon.
 
 ## Where packs come from
 
-`herald sync` pulls the current set. Three layers, later wins:
+`herald sync` pulls the current set. While this repository is private that
+needs a token, because GitHub answers a request for a private repository with
+404 rather than 403 and the bare status reads like a wrong tag:
+
+```bash
+GITHUB_TOKEN=$(gh auth token) herald sync
+```
+
+`GH_TOKEN` is read too. herald does not shell out to `gh` for a token by
+itself; reading your stored credentials because a download failed is not
+something a tool should do without being asked.
+
+Three layers, later wins:
 
 | Layer | Where | What it is |
 |---|---|---|
