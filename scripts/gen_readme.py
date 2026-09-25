@@ -11,6 +11,14 @@ END = "<!-- incompatible:end -->"
 
 
 def block(entries):
+    """Table plus one short paragraph each.
+
+    The long-form `detail` deliberately does not come out here. It is the
+    explanation a contributor wants when they are arguing with the decision,
+    and it lives in providers/incompatible.yaml where the decision is. A README
+    section that runs four paragraphs per entry is a section people scroll
+    past, which defeats the point of listing them at all.
+    """
     out = [START, ""]
     out.append("| Provider | Signs with |")
     out.append("|---|---|")
@@ -19,11 +27,11 @@ def block(entries):
     out.append("")
 
     for e in entries:
-        out.append("**%s.** %s" % (e["name"], e["summary"]))
-        out.append("")
-        out.append(" ".join(e["detail"].split()))
-        out.append("")
-        out.append("Instead: %s" % " ".join(e["workaround"].split()))
+        out.append("**%s.** %s Instead: %s" % (
+            e["name"],
+            " ".join(e["summary"].split()),
+            " ".join(e["workaround"].split()),
+        ))
         out.append("")
 
     out.append(END)

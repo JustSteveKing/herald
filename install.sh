@@ -15,9 +15,9 @@
 # GoReleaser, checks it against that release's checksums.txt, and installs the
 # binary onto your PATH.
 #
-# While the repository is private, the download path needs the gh CLI signed
-# in, because an unauthenticated request to a private release is a 404. The
-# build path does not care.
+# The download needs no account. If the gh CLI is signed in it is used anyway,
+# which is what makes this work unchanged against a private fork, where an
+# unauthenticated request for a release asset comes back 404 rather than 403.
 
 set -eu
 printf '\n'
@@ -146,9 +146,9 @@ fetch_stdout() {
 	fi
 }
 
-# gh_ready is true when the gh CLI is present and signed in. It is the only
-# way to reach a release on a private repository without hand rolling token
-# handling, and it works just as well once the repository is public.
+# gh_ready is true when the gh CLI is present and signed in. Using it when it
+# is there costs nothing and is the only way to reach a release on a private
+# fork without hand rolling token handling.
 gh_ready() {
 	has gh && gh auth status >/dev/null 2>&1
 }
@@ -327,7 +327,7 @@ install_release() {
 
 	if gh_ready; then
 		USED_GH=1
-		info "Downloading with the gh CLI, which works whether or not the repository is public."
+		info "Downloading with the gh CLI, which works against a private fork too."
 		gh release download "${TAG}" --repo "${GITHUB_REPO}" --pattern "${ARCHIVE}" --output "${archive}" --clobber
 	else
 		download "${archive}" "${URL}"
@@ -482,7 +482,7 @@ else
 			if [ -n "${ROOT}" ]; then
 				info "There is a checkout here. Build from it with ${BOLD}--source${NO_COLOR}."
 			elif ! gh_ready; then
-				info "The repository may be private. Sign in with ${BOLD}gh auth login${NO_COLOR} and try again."
+				info "If this is a private fork, sign in with ${BOLD}gh auth login${NO_COLOR} and try again."
 			fi
 			exit 1
 		fi
