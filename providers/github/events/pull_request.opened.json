@@ -1,0 +1,40 @@
+{
+  "action": "opened",
+  "number": 12,
+  "pull_request": {
+    "id": 2104883771,
+    "number": 12,
+    "state": "open",
+    "title": "Add Resend to providers/",
+    "body": "Copied the standardwebhooks pack and changed the header names.",
+    "user": {
+      "login": "contributor",
+      "id": 5512038,
+      "type": "User"
+    },
+    "head": {
+      "ref": "add-resend",
+      "sha": "c4e1a9075b3d2f68e0a7c1b4d9f2306e8a5b7c13"
+    },
+    "base": {
+      "ref": "main",
+      "sha": "3b7d9e2f18a4c605d2e8f1b3a9c7d5e04f6b8a21"
+    },
+    "draft": false,
+    "merged": false,
+    "additions": 41,
+    "deletions": 0,
+    "changed_files": 3
+  },
+  "repository": {
+    "id": 782940113,
+    "name": "herald",
+    "full_name": "JustSteveKing/herald",
+    "private": true
+  },
+  "sender": {
+    "login": "contributor",
+    "id": 5512038,
+    "type": "User"
+  }
+}

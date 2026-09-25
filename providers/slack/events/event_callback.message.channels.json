@@ -1,0 +1,17 @@
+{
+  "token": "Jhj5dZrVaK7ZwHHjRyZWjbDl",
+  "team_id": "T061EG9R6",
+  "api_app_id": "A0MDYCDME",
+  "event": {
+    "type": "message",
+    "channel": "C0LAN2Q65",
+    "user": "U061F7AUR",
+    "text": "shipped",
+    "ts": "1735689712.000300",
+    "event_ts": "1735689712.000300",
+    "channel_type": "channel"
+  },
+  "type": "event_callback",
+  "event_id": "Ev0MDYGDKK",
+  "event_time": 1735689712
+}

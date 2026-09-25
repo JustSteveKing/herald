@@ -1,0 +1,37 @@
+name: Slack
+homepage: https://slack.com
+docs: https://api.slack.com/authentication/verifying-requests-from-slack
+
+secret:
+  label: Signing secret
+  example: 8f742231b10e8888abcd99yyyzzz85a5
+  encoding: raw
+
+transport:
+  method: POST
+  contentType: application/json
+  headers:
+    User-Agent: Slackbot 1.0 (+https://api.slack.com/robots)
+    X-Slack-Request-Timestamp: "{timestamp}"
+
+timestamp:
+  format: unix
+  # Slack tells you to reject anything older than five minutes yourself. It
+  # does not do it for you, which is why --skew is worth running against a
+  # handler you believe already handles this.
+  tolerance: 5m
+
+signing:
+  - header: X-Slack-Signature
+    algorithm: sha256
+    encoding: hex
+    payload: "v0:{timestamp}:{body}"
+    format: "v0={signature}"
+
+events:
+  event_callback.app_mention:
+    description: Someone mentioned the app in a channel.
+  event_callback.message.channels:
+    description: A message was posted in a public channel the app is in.
+  url_verification:
+    description: The handshake Slack sends when you save the request URL. Must echo the challenge back within three seconds.

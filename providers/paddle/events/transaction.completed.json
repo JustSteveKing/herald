@@ -1,0 +1,28 @@
+{
+  "event_id": "evt_01j8k4n2p7q9rs3tv5wx6y7z8a",
+  "event_type": "transaction.completed",
+  "occurred_at": "2026-09-25T13:21:07.349183Z",
+  "notification_id": "ntf_01j8k4n2q1b3c5d7e9f2g4h6j8",
+  "data": {
+    "id": "txn_01j8k4mzxa2b4c6d8e1f3g5h7j",
+    "status": "completed",
+    "customer_id": "ctm_01j8k4mp3q5r7s9t1v3w5x7y9z",
+    "currency_code": "GBP",
+    "origin": "web",
+    "billed_at": "2026-09-25T13:21:06.118273Z",
+    "items": [
+      {
+        "price_id": "pri_01j8k4mk1n3p5q7r9s2t4v6w8x",
+        "quantity": 1
+      }
+    ],
+    "details": {
+      "totals": {
+        "subtotal": "2400",
+        "tax": "480",
+        "total": "2880",
+        "currency_code": "GBP"
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "resource": "event",
+  "id": "event_TkR3bXqZ7pLmWs2FnCvYd",
+  "type": "payment.failed",
+  "entityId": "tr_WDqYK6vllg",
+  "createdAt": "2026-09-25T16:04:41.0Z",
+  "_embedded": {
+    "entity": {
+      "resource": "payment",
+      "id": "tr_WDqYK6vllg",
+      "mode": "test",
+      "status": "failed",
+      "description": "Herald Pro, monthly",
+      "amount": {
+        "currency": "EUR",
+        "value": "28.00"
+      },
+      "method": "creditcard",
+      "failedAt": "2026-09-25T16:04:40+00:00",
+      "createdAt": "2026-09-25T16:03:58+00:00"
+    }
+  },
+  "_links": {
+    "self": {
+      "href": "https://api.mollie.com/v2/events/event_TkR3bXqZ7pLmWs2FnCvYd",
+      "type": "application/hal+json"
+    }
+  }
+}

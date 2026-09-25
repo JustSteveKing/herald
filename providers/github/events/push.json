@@ -1,0 +1,45 @@
+{
+  "ref": "refs/heads/main",
+  "before": "9f2c1ab4d7e35608b1c0f9a2e4d8b7c6a5309f12",
+  "after": "3b7d9e2f18a4c605d2e8f1b3a9c7d5e04f6b8a21",
+  "created": false,
+  "deleted": false,
+  "forced": false,
+  "compare": "https://github.com/JustSteveKing/herald/compare/9f2c1ab4d7e3...3b7d9e2f18a4",
+  "commits": [
+    {
+      "id": "3b7d9e2f18a4c605d2e8f1b3a9c7d5e04f6b8a21",
+      "message": "signer: take the whole request, not the body",
+      "timestamp": "2026-09-25T14:02:11+01:00",
+      "author": {
+        "name": "Steve McDougall",
+        "email": "juststeveking@example.com",
+        "username": "JustSteveKing"
+      },
+      "added": ["signer/builtin.go"],
+      "modified": ["signer/signer.go"],
+      "removed": []
+    }
+  ],
+  "head_commit": {
+    "id": "3b7d9e2f18a4c605d2e8f1b3a9c7d5e04f6b8a21",
+    "message": "signer: take the whole request, not the body",
+    "timestamp": "2026-09-25T14:02:11+01:00"
+  },
+  "repository": {
+    "id": 782940113,
+    "name": "herald",
+    "full_name": "JustSteveKing/herald",
+    "private": true,
+    "default_branch": "main"
+  },
+  "pusher": {
+    "name": "JustSteveKing",
+    "email": "juststeveking@example.com"
+  },
+  "sender": {
+    "login": "JustSteveKing",
+    "id": 9967714,
+    "type": "User"
+  }
+}

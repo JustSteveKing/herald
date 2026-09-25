@@ -1,0 +1,21 @@
+{
+  "type": "user.created",
+  "timestamp": "2026-09-25T09:12:44Z",
+  "data": {
+    "id": "user_2mKqR7vXbN3pLwZs8Yt1Fd4Hg",
+    "email_addresses": [
+      {
+        "id": "idn_2mKqR8wYcO4qMxAt9Zu2Ge5Ih",
+        "email_address": "customer@example.com",
+        "verification": {
+          "status": "verified",
+          "strategy": "email_code"
+        }
+      }
+    ],
+    "first_name": "Alex",
+    "last_name": "Ramirez",
+    "created_at": 1758791564000,
+    "updated_at": 1758791564000
+  }
+}

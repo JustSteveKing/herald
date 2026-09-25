@@ -1,0 +1,52 @@
+name: Standard Webhooks
+homepage: https://www.standardwebhooks.com
+docs: https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md
+
+notes: |
+  One pack for every provider that adopted the spec, which includes anything
+  sending through Svix: Clerk, Resend, Brex, Lob and others. If the endpoint
+  you are testing reads webhook-id, webhook-timestamp and webhook-signature,
+  this is the right pack whatever the vendor is called.
+
+secret:
+  label: Signing secret
+  example: whsec_MfKQ9r8GKYqrTwjUPD8ILPZIo2LaLaSw
+  # The prefix comes off and what is left is base64. Signing the printable
+  # string instead produces a signature that verifies against nothing, and no
+  # error message anywhere will tell you that is what happened.
+  prefix: whsec_
+  encoding: base64
+
+transport:
+  method: POST
+  contentType: application/json
+  headers:
+    User-Agent: StandardWebhooks/1.0
+    webhook-id: "{id}"
+    webhook-timestamp: "{timestamp}"
+
+timestamp:
+  format: unix
+  tolerance: 5m
+
+signing:
+  - header: webhook-signature
+    algorithm: sha256
+    encoding: base64
+    payload: "{id}.{timestamp}.{body}"
+    # The v1 prefix and the space separator matter: a receiver may be sent
+    # several space-separated signatures during a secret rotation and is
+    # expected to accept any of them.
+    format: "v1,{signature}"
+
+events:
+  user.created:
+    description: A user signed up. The Clerk and Svix example event.
+  invoice.paid:
+    description: A generic paid invoice, for checking the envelope rather than the contents.
+
+# The delivery id is part of the signed string here, not just a header, so
+# it has to look like one of theirs.
+delivery:
+  format: token
+  prefix: msg_

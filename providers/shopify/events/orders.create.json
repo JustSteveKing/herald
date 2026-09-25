@@ -1,0 +1,34 @@
+{
+  "id": 5238907453441,
+  "admin_graphql_api_id": "gid://shopify/Order/5238907453441",
+  "app_id": 580111,
+  "confirmed": true,
+  "created_at": "2026-09-25T10:14:02+01:00",
+  "currency": "GBP",
+  "current_total_price": "48.00",
+  "customer": {
+    "id": 7104928374611,
+    "email": "customer@example.com",
+    "first_name": "Alex",
+    "last_name": "Ramirez"
+  },
+  "email": "customer@example.com",
+  "financial_status": "pending",
+  "fulfillment_status": null,
+  "line_items": [
+    {
+      "id": 13981347512321,
+      "name": "Herald Sticker Pack",
+      "price": "24.00",
+      "quantity": 2,
+      "sku": "HRLD-STK-01",
+      "title": "Herald Sticker Pack"
+    }
+  ],
+  "name": "#1042",
+  "order_number": 1042,
+  "subtotal_price": "48.00",
+  "test": true,
+  "total_price": "48.00",
+  "updated_at": "2026-09-25T10:14:02+01:00"
+}

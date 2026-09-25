@@ -1,0 +1,34 @@
+name: Paddle
+homepage: https://www.paddle.com
+docs: https://developer.paddle.com/webhooks/signature-verification
+
+secret:
+  label: Notification setting secret key
+  example: pdl_ntfset_01gt2183qnx16v3g3d3s1s2a1b_secret
+  encoding: raw
+
+transport:
+  method: POST
+  contentType: application/json
+  headers:
+    User-Agent: Paddle/1.0
+
+timestamp:
+  format: unix
+  tolerance: 5s
+
+# Semicolon between the parts and a colon inside the signed string. Stripe uses
+# a comma and a full stop for the same two jobs, which is exactly the sort of
+# difference a shared signer gets wrong once.
+signing:
+  - header: Paddle-Signature
+    algorithm: sha256
+    encoding: hex
+    payload: "{timestamp}:{body}"
+    format: "ts={timestamp};h1={signature}"
+
+events:
+  transaction.completed:
+    description: A transaction was completed.
+  subscription.canceled:
+    description: A subscription was cancelled.

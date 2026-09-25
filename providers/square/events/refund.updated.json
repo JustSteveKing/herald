@@ -1,0 +1,25 @@
+{
+  "merchant_id": "MLE1B2C3D4E5F",
+  "type": "refund.updated",
+  "event_id": "7f6e5d4c-3b2a-1908-7f6e-5d4c3b2a1908",
+  "created_at": "2026-09-25T12:41:19.663Z",
+  "data": {
+    "type": "refund",
+    "id": "bR4tPzYq8nKcWvLmXs2Fd1Hg_REFUND",
+    "object": {
+      "refund": {
+        "id": "bR4tPzYq8nKcWvLmXs2Fd1Hg_REFUND",
+        "payment_id": "bR4tPzYq8nKcWvLmXs2Fd1Hg",
+        "status": "COMPLETED",
+        "amount_money": {
+          "amount": 2400,
+          "currency": "GBP"
+        },
+        "created_at": "2026-09-25T12:40:02.117Z",
+        "updated_at": "2026-09-25T12:41:19.204Z",
+        "location_id": "L7K9M2N4P6Q8R",
+        "version": 3
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": 61829470913,
+  "name": "Example Store",
+  "domain": "example.com",
+  "myshopify_domain": "example.myshopify.com",
+  "email": "owner@example.com",
+  "country_code": "GB",
+  "currency": "GBP",
+  "plan_name": "basic",
+  "created_at": "2024-02-11T09:31:44+00:00",
+  "updated_at": "2026-09-25T11:02:19+01:00"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "evt_3PZq1kL2eZvKYlo2C9vXqRtA",
+  "object": "event",
+  "api_version": "2026-06-30.basil",
+  "created": 1735689600,
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": "req_5kG7TbXqPz1nMa",
+    "idempotency_key": "a3f1c2de-9b47-4d1e-8a6c-2f0b5d9e7c31"
+  },
+  "type": "payment_intent.succeeded",
+  "data": {
+    "object": {
+      "id": "pi_3PZq1kL2eZvKYlo2C9vXqRtA",
+      "object": "payment_intent",
+      "amount": 2400,
+      "amount_received": 2400,
+      "currency": "gbp",
+      "customer": "cus_QXm2pLbNvR8dKf",
+      "description": "Herald Pro, monthly",
+      "latest_charge": "ch_3PZq1kL2eZvKYlo2CxWq8ZbN",
+      "metadata": {
+        "order_id": "2026-0914"
+      },
+      "payment_method_types": ["card"],
+      "receipt_email": "customer@example.com",
+      "status": "succeeded"
+    }
+  }
+}

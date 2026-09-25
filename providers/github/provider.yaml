@@ -1,0 +1,51 @@
+name: GitHub
+homepage: https://github.com
+docs: https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries
+
+secret:
+  label: Webhook secret
+  example: It's a Secret to Everybody
+  encoding: raw
+
+transport:
+  method: POST
+  contentType: application/json
+  headers:
+    User-Agent: GitHub-Hookshot/a1b2c3d
+    X-GitHub-Event: "{event}"
+    X-GitHub-Delivery: "{id}"
+    X-GitHub-Hook-ID: "584194250"
+    X-GitHub-Hook-Installation-Target-Type: repository
+    X-GitHub-Hook-Installation-Target-ID: "782940113"
+
+timestamp:
+  format: unix
+
+# Two headers, both real. GitHub still sends the SHA-1 one for compatibility
+# and its own docs tell you to ignore it. A handler that reads the wrong one
+# is a bug you can only reproduce if the tool sends both.
+signing:
+  - header: X-Hub-Signature-256
+    algorithm: sha256
+    encoding: hex
+    payload: "{body}"
+    format: "sha256={signature}"
+  - header: X-Hub-Signature
+    algorithm: sha1
+    encoding: hex
+    payload: "{body}"
+    format: "sha1={signature}"
+
+events:
+  push:
+    description: Commits landed on a ref.
+  pull_request.opened:
+    description: A pull request was opened. The action is in the body, not the header.
+    headers:
+      X-GitHub-Event: pull_request
+  issues.closed:
+    description: An issue was closed.
+    headers:
+      X-GitHub-Event: issues
+  ping:
+    description: Sent once when the hook is created. Worth handling, and usually is not.

@@ -1,0 +1,45 @@
+name: Shopify
+homepage: https://www.shopify.com
+docs: https://shopify.dev/docs/apps/build/webhooks/subscribe/https#validate-the-origin-of-your-webhook-to-ensure-its-coming-from-shopify
+
+secret:
+  label: App client secret
+  example: hush
+  encoding: raw
+
+transport:
+  method: POST
+  contentType: application/json
+  headers:
+    User-Agent: Shopify-Captain-Hook
+    X-Shopify-Topic: "{event}"
+    X-Shopify-Shop-Domain: example.myshopify.com
+    X-Shopify-Webhook-Id: "{id}"
+    X-Shopify-API-Version: "2026-01"
+    X-Shopify-Triggered-At: "{timestamp}"
+
+timestamp:
+  format: rfc3339
+
+# Base64, not hex. Comparing a hex digest against this header is the Shopify
+# version of the same mistake everyone makes once.
+signing:
+  - header: X-Shopify-Hmac-Sha256
+    algorithm: sha256
+    encoding: base64
+    payload: "{body}"
+    format: "{signature}"
+
+events:
+  orders.create:
+    description: An order was placed.
+    headers:
+      X-Shopify-Topic: orders/create
+  orders.paid:
+    description: An order was paid for, which is a separate delivery from orders/create.
+    headers:
+      X-Shopify-Topic: orders/paid
+  app.uninstalled:
+    description: The app was removed. The last webhook you will get from this shop.
+    headers:
+      X-Shopify-Topic: app/uninstalled

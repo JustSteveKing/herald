@@ -1,0 +1,41 @@
+name: Square
+homepage: https://squareup.com
+docs: https://developer.squareup.com/docs/webhooks/step3validate
+
+notes: |
+  Square signs the notification URL concatenated with the body, so the
+  signature is only valid for the exact --to you gave it. Square compares
+  against the URL registered in the developer dashboard, not the URL the
+  request arrived on, so a local test passes with a localhost URL while
+  production needs the registered one.
+
+secret:
+  label: Signature key
+  example: sq_sig_test_key_1234567890
+  encoding: raw
+
+transport:
+  method: POST
+  contentType: application/json
+  headers:
+    User-Agent: Square-Webhooks/1.0
+    Square-Environment: Sandbox
+    Square-Initial-Delivery-Timestamp: "{timestamp}"
+    Square-Retry-Number: "0"
+    Square-Retry-Reason: ""
+
+timestamp:
+  format: rfc3339
+
+signing:
+  - header: x-square-hmacsha256-signature
+    algorithm: sha256
+    encoding: base64
+    payload: "{url}{body}"
+    format: "{signature}"
+
+events:
+  payment.created:
+    description: A payment was created.
+  refund.updated:
+    description: A refund changed state.

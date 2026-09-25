@@ -1,0 +1,27 @@
+{
+  "zen": "Non-blocking is better than blocking.",
+  "hook_id": 584194250,
+  "hook": {
+    "type": "Repository",
+    "id": 584194250,
+    "name": "web",
+    "active": true,
+    "events": ["push", "pull_request", "issues"],
+    "config": {
+      "content_type": "json",
+      "insecure_ssl": "0",
+      "url": "https://example.com/webhooks/github"
+    }
+  },
+  "repository": {
+    "id": 782940113,
+    "name": "herald",
+    "full_name": "JustSteveKing/herald",
+    "private": true
+  },
+  "sender": {
+    "login": "JustSteveKing",
+    "id": 9967714,
+    "type": "User"
+  }
+}

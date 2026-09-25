@@ -1,0 +1,31 @@
+{
+  "resource": "event",
+  "id": "event_GvJ8WHrp5isUdRub9CJyH",
+  "type": "payment-link.paid",
+  "entityId": "pl_qng5gbbv8NAZ5gpM5ZYgx",
+  "createdAt": "2026-09-25T15:57:04.0Z",
+  "_embedded": {
+    "entity": {
+      "resource": "payment-link",
+      "id": "pl_qng5gbbv8NAZ5gpM5ZYgx",
+      "mode": "test",
+      "description": "Herald Pro, monthly",
+      "amount": {
+        "currency": "EUR",
+        "value": "28.00"
+      },
+      "paidAt": "2026-09-25T15:57:03+00:00",
+      "createdAt": "2026-09-25T15:49:12+00:00"
+    }
+  },
+  "_links": {
+    "self": {
+      "href": "https://api.mollie.com/v2/events/event_GvJ8WHrp5isUdRub9CJyH",
+      "type": "application/hal+json"
+    },
+    "documentation": {
+      "href": "https://docs.mollie.com/reference/webhooks-new",
+      "type": "text/html"
+    }
+  }
+}

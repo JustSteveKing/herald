@@ -1,0 +1,26 @@
+{
+  "merchant_id": "MLE1B2C3D4E5F",
+  "type": "payment.created",
+  "event_id": "9a3b1c2d-4e5f-6071-8293-a4b5c6d7e8f9",
+  "created_at": "2026-09-25T12:08:31.442Z",
+  "data": {
+    "type": "payment",
+    "id": "bR4tPzYq8nKcWvLmXs2Fd1Hg",
+    "object": {
+      "payment": {
+        "id": "bR4tPzYq8nKcWvLmXs2Fd1Hg",
+        "created_at": "2026-09-25T12:08:31.108Z",
+        "updated_at": "2026-09-25T12:08:31.398Z",
+        "amount_money": {
+          "amount": 2400,
+          "currency": "GBP"
+        },
+        "status": "APPROVED",
+        "source_type": "CARD",
+        "location_id": "L7K9M2N4P6Q8R",
+        "order_id": "cW3xZ5vB7nM1kJ9hG2fD4sA6",
+        "version": 1
+      }
+    }
+  }
+}

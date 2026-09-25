@@ -1,0 +1,28 @@
+{
+  "id": "evt_1PaB3xL2eZvKYlo2QhTnVzKd",
+  "object": "event",
+  "api_version": "2026-06-30.basil",
+  "created": 1735696800,
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "invoice.payment_failed",
+  "data": {
+    "object": {
+      "id": "in_1PaB3xL2eZvKYlo2QhTnVzKd",
+      "object": "invoice",
+      "amount_due": 2400,
+      "amount_paid": 0,
+      "attempt_count": 2,
+      "billing_reason": "subscription_cycle",
+      "currency": "gbp",
+      "customer": "cus_QXm2pLbNvR8dKf",
+      "next_payment_attempt": 1735956000,
+      "status": "open",
+      "subscription": "sub_1PaAx2L2eZvKYlo2ThQrWnBf"
+    }
+  }
+}

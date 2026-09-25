@@ -1,0 +1,28 @@
+{
+  "id": "evt_1PaDq4L2eZvKYlo2WgXcNbHr",
+  "object": "event",
+  "api_version": "2026-06-30.basil",
+  "created": 1735704000,
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "checkout.session.completed",
+  "data": {
+    "object": {
+      "id": "cs_test_a1BcD2eFgH3iJkL4mN5oP6qR7sT8uV9wX0yZ",
+      "object": "checkout.session",
+      "amount_total": 2400,
+      "currency": "gbp",
+      "customer": "cus_QXm2pLbNvR8dKf",
+      "customer_email": "customer@example.com",
+      "mode": "subscription",
+      "payment_intent": "pi_3PZq1kL2eZvKYlo2C9vXqRtA",
+      "payment_status": "paid",
+      "status": "complete",
+      "subscription": "sub_1PaAx2L2eZvKYlo2ThQrWnBf"
+    }
+  }
+}

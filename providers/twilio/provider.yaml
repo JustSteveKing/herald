@@ -1,0 +1,35 @@
+name: Twilio
+homepage: https://www.twilio.com
+docs: https://www.twilio.com/docs/usage/security#validating-requests
+
+notes: |
+  Twilio signs the full request URL along with the form parameters, so the
+  signature herald generates is only valid for the exact --to you gave it.
+  Change the URL, even from http to https, and verification fails.
+
+  That is not a quirk to work around. It is the most common cause of Twilio
+  signature failures in production, where a load balancer terminates TLS and
+  the application sees http on a URL Twilio signed as https. Send to the URL
+  your framework thinks it is on, not the one you typed into the browser.
+
+secret:
+  label: Auth token
+  example: "12345678901234567890123456789012"
+  encoding: raw
+
+transport:
+  method: POST
+  contentType: application/x-www-form-urlencoded
+  headers:
+    User-Agent: TwilioProxy/1.1
+
+signing:
+  - header: X-Twilio-Signature
+    scheme: builtin
+    builtin: twilio
+
+events:
+  sms.received:
+    description: An inbound SMS arrived on a Twilio number.
+  call.status.completed:
+    description: A call finished. Sent to the status callback URL, not the voice URL.

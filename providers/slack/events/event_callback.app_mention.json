@@ -1,0 +1,17 @@
+{
+  "token": "Jhj5dZrVaK7ZwHHjRyZWjbDl",
+  "team_id": "T061EG9R6",
+  "api_app_id": "A0MDYCDME",
+  "event": {
+    "type": "app_mention",
+    "user": "U061F7AUR",
+    "text": "<@U0LAN0Z89> can you send a test webhook?",
+    "ts": "1735689600.000200",
+    "channel": "C0LAN2Q65",
+    "event_ts": "1735689600.000200"
+  },
+  "type": "event_callback",
+  "authed_users": ["U0LAN0Z89"],
+  "event_id": "Ev0MDYGDKJ",
+  "event_time": 1735689600
+}

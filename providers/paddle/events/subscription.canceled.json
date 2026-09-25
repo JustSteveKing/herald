@@ -1,0 +1,14 @@
+{
+  "event_id": "evt_01j8k5r4t6v8w1x3y5z7a9b2c4",
+  "event_type": "subscription.canceled",
+  "occurred_at": "2026-09-25T14:02:55.771204Z",
+  "notification_id": "ntf_01j8k5r5u7v9x2y4z6a8b1c3d5",
+  "data": {
+    "id": "sub_01j8k4mr5s7t9v2w4x6y8z1a3b",
+    "status": "canceled",
+    "customer_id": "ctm_01j8k4mp3q5r7s9t1v3w5x7y9z",
+    "currency_code": "GBP",
+    "canceled_at": "2026-09-25T14:02:54.339910Z",
+    "scheduled_change": null
+  }
+}

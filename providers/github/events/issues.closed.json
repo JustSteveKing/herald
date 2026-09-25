@@ -1,0 +1,36 @@
+{
+  "action": "closed",
+  "issue": {
+    "id": 3391047722,
+    "number": 8,
+    "title": "Twilio signature does not verify behind a reverse proxy",
+    "state": "closed",
+    "state_reason": "completed",
+    "body": "The proxy rewrites https to http, so the signed URL no longer matches.",
+    "user": {
+      "login": "contributor",
+      "id": 5512038,
+      "type": "User"
+    },
+    "labels": [
+      {
+        "id": 8802114,
+        "name": "bug",
+        "color": "d73a4a"
+      }
+    ],
+    "comments": 3,
+    "closed_at": "2026-09-25T16:41:09Z"
+  },
+  "repository": {
+    "id": 782940113,
+    "name": "herald",
+    "full_name": "JustSteveKing/herald",
+    "private": true
+  },
+  "sender": {
+    "login": "JustSteveKing",
+    "id": 9967714,
+    "type": "User"
+  }
+}

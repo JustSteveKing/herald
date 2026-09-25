@@ -1,0 +1,26 @@
+{
+  "id": "evt_1PaCk9L2eZvKYlo2MfRtYpLm",
+  "object": "event",
+  "api_version": "2026-06-30.basil",
+  "created": 1735700400,
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": "req_2nHbKwPqXz8Lts",
+    "idempotency_key": null
+  },
+  "type": "customer.subscription.deleted",
+  "data": {
+    "object": {
+      "id": "sub_1PaAx2L2eZvKYlo2ThQrWnBf",
+      "object": "subscription",
+      "cancel_at_period_end": false,
+      "canceled_at": 1735700400,
+      "currency": "gbp",
+      "customer": "cus_QXm2pLbNvR8dKf",
+      "current_period_end": 1738292400,
+      "current_period_start": 1735700400,
+      "status": "canceled"
+    }
+  }
+}

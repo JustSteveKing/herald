@@ -1,0 +1,40 @@
+name: Stripe
+homepage: https://stripe.com
+docs: https://docs.stripe.com/webhooks/signatures
+
+secret:
+  label: Endpoint signing secret
+  example: whsec_test_secret
+  # No prefix strip and no decoding. Stripe keys the HMAC with the whole
+  # secret as printed, whsec_ included, which is the opposite of Standard
+  # Webhooks and the single most common reason a hand-rolled signer is wrong.
+  encoding: raw
+
+transport:
+  method: POST
+  contentType: application/json
+  headers:
+    User-Agent: Stripe/1.0 (+https://docs.stripe.com/webhooks)
+
+timestamp:
+  format: unix
+  tolerance: 5m
+
+signing:
+  - header: Stripe-Signature
+    algorithm: sha256
+    encoding: hex
+    payload: "{timestamp}.{body}"
+    format: "t={timestamp},v1={signature}"
+
+events:
+  payment_intent.succeeded:
+    description: A payment completed. The one everyone handles first.
+  charge.refunded:
+    description: Money went back. Often arrives after the payment_intent event it relates to.
+  invoice.payment_failed:
+    description: A subscription charge failed and Stripe will retry.
+  customer.subscription.deleted:
+    description: A subscription ended, either cancelled or churned out.
+  checkout.session.completed:
+    description: Checkout finished. Arrives alongside payment_intent.succeeded, not instead of it.

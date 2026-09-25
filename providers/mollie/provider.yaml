@@ -1,0 +1,35 @@
+name: Mollie
+homepage: https://www.mollie.com
+docs: https://docs.mollie.com/reference/webhooks-new
+
+notes: |
+  This is Mollie's next-generation webhook: signed, with a real payload. It is
+  not what an older Mollie integration receives. If the application you are
+  testing expects a form body containing only an id, you want mollie-classic.
+
+secret:
+  label: Webhook signing secret
+  example: whsec_mollie_test_secret
+  encoding: raw
+
+transport:
+  method: POST
+  contentType: application/json
+  headers:
+    User-Agent: Mollie/1.0
+
+timestamp:
+  format: unix
+
+signing:
+  - header: X-Mollie-Signature
+    algorithm: sha256
+    encoding: hex
+    payload: "{body}"
+    format: "sha256={signature}"
+
+events:
+  payment-link.paid:
+    description: A payment link was paid.
+  payment.failed:
+    description: A payment attempt failed.

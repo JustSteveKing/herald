@@ -1,0 +1,33 @@
+name: Mollie (classic)
+homepage: https://www.mollie.com
+docs: https://docs.mollie.com/reference/webhooks
+
+notes: |
+  Classic Mollie webhooks are not signed. There is no HMAC, no signature header
+  and no shared secret, so there is nothing here for a handler to verify and
+  --bad-signature has nothing to break.
+
+  The body is a form containing one field: the id of the resource that changed.
+  Mollie expects the application to call the Mollie API with that id and read
+  the authoritative status back.
+
+  That has a consequence worth knowing before you trust a green result. Sending
+  this fixture makes the application under test call the real Mollie API with
+  the id below, which does not exist in your account. The fixture covers the
+  route, the parsing and the queue dispatch. It does not cover the branch that
+  runs after the API answers, and that is where most of the logic lives.
+
+secret:
+  label: Not used
+
+transport:
+  method: POST
+  contentType: application/x-www-form-urlencoded
+  headers:
+    User-Agent: Mollie/1.0
+
+signing: []
+
+events:
+  payment.status-changed:
+    description: A payment changed state. Which state is not in the body; you have to go and ask.

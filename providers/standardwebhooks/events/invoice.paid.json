@@ -1,0 +1,12 @@
+{
+  "type": "invoice.paid",
+  "timestamp": "2026-09-25T09:31:02Z",
+  "data": {
+    "id": "inv_8Ht2Kp5Rw9Yc3Nq7Vb1Zx",
+    "amount": 2400,
+    "currency": "GBP",
+    "status": "paid",
+    "customer_id": "cus_4Jd6Mn9Qs2Tv5Xz8Bf1Ck",
+    "paid_at": "2026-09-25T09:31:01Z"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "evt_3PZq7yL2eZvKYlo2D4mKpLwB",
+  "object": "event",
+  "api_version": "2026-06-30.basil",
+  "created": 1735693200,
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": "req_9mQ4RzTkYb2pLc",
+    "idempotency_key": null
+  },
+  "type": "charge.refunded",
+  "data": {
+    "object": {
+      "id": "ch_3PZq1kL2eZvKYlo2CxWq8ZbN",
+      "object": "charge",
+      "amount": 2400,
+      "amount_refunded": 2400,
+      "currency": "gbp",
+      "customer": "cus_QXm2pLbNvR8dKf",
+      "payment_intent": "pi_3PZq1kL2eZvKYlo2C9vXqRtA",
+      "refunded": true,
+      "status": "succeeded"
+    }
+  }
+}
