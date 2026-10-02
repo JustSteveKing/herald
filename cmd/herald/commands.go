@@ -54,6 +54,7 @@ own schedule with "herald sync".`,
 
 	cmd.AddCommand(providersCmd(), eventsCmd(), showCmd(), sendCmd(), syncCmd())
 
+	addCompletionInstall(cmd)
 	return cmd
 }
 

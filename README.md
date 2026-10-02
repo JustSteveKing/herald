@@ -45,6 +45,19 @@ A source build stamps the version with `git describe`, so `herald --version`
 printing a commit means you built it and printing `v0.1.1` means you downloaded
 it. Worth having the moment you wonder why a fix is not in your binary.
 
+### Tab completion
+
+```bash
+herald completion install
+```
+
+It works out your shell from `$SHELL` (or name it: `bash`, `zsh`, `fish`)
+and writes the script where that shell loads completions from, so there is
+nothing to source by hand. bash needs bash-completion installed. For zsh it
+checks the folder is on your `fpath` and prints the lines to add to
+`~/.zshrc` if not, or adds them with `--yes`. `herald completion uninstall`
+removes it.
+
 ## Use
 
 Run `herald` with no arguments and pick something.
