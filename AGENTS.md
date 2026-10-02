@@ -139,3 +139,15 @@ rejected. A comment restating the line below it is noise.
 Prose in this repository, including the README and commit messages, uses
 British spelling and no em dashes. Commit subjects are lowercase and say what
 changed, not what you did: `signer: take the whole request, not the body`.
+
+## Startup
+
+`internal/termquiet` and its blank import in `cmd/herald/main.go` are load-bearing.
+Bubble Tea v1 asks the terminal for its background colour in its package
+`init`, so every herald command, not just the TUI, waited out a five-second
+timeout on a terminal that never answers (measured: `herald --version` took
+5.01s). termquiet declares the background first, relying on Go's specified
+package initialisation order (imports first, then import path, and
+`JustSteveKing` sorts before `charmbracelet`). `TestNoBackgroundQuery` runs
+the built binary in a pty (creack/pty, test-only) and fails at 4s if the
+import is removed or the package moved. The same fix as mavis's and taskgo's.

@@ -4,6 +4,9 @@ package main
 import (
 	"fmt"
 	"os"
+
+	// Before anything imports Bubble Tea: see the package doc.
+	_ "github.com/JustSteveKing/herald/internal/termquiet"
 )
 
 func main() {
